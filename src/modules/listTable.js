@@ -54,7 +54,6 @@ let ListTable = (function(){
 	}
 	function defaultConfig(){
 		return {
-			version: 2,
 			anime: defaultTypeConfig("ANIME"),
 			manga: defaultTypeConfig("MANGA"),
 			dateFormat: "YYYY-MM-DD",
@@ -75,15 +74,8 @@ let ListTable = (function(){
 	let clamp = (value,min,max,fallback) => Number.isFinite(+value) ? Math.min(max,Math.max(min,+value)) : fallback;
 	function normaliseConfig(raw){
 		let config = Object.assign(defaultConfig(), raw || {});
-		let legacyOff = !!raw && raw.enabled === false;//older versions had one switch for both lists
-		delete config.enabled;
 		config.fillBlanks = config.fillBlanks === true;
 		let style = Object.assign(defaultStyle(), (raw && raw.style) || {});
-		//version 1 saved a fixed 10px spacing as its default, from version 2 the default is AniList's own spacing
-		if(raw && !raw.version && style.cellPadding === 10){
-			style.cellPadding = null
-		}
-		config.version = 2;
 		config.style = {
 			lines: ["none","horizontal","vertical","both"].includes(style.lines) ? style.lines : "none",
 			columnWidths: style.columnWidths === "fit" ? "fit" : "even",
@@ -106,7 +98,7 @@ let ListTable = (function(){
 			valid.forEach(id => {
 				enabled[id] = hasOwn(stored.enabled || {}, id) ? !!stored.enabled[id] : defaults.enabled[id]
 			});
-				config[key] = {on: legacyOff ? false : stored.on !== false,order: order, enabled: enabled}
+			config[key] = {on: stored.on !== false,order: order, enabled: enabled}
 		});
 		return config
 	}
@@ -1118,7 +1110,7 @@ let ListTable = (function(){
 		document.addEventListener("mousedown",outsideClick,true)
 	}
 
-	//settings UI, used on the list page and on the Automail settings page
+	//settings UI, used on the list page and on the settings page
 	function buildSettings(container,options){
 		options = options || {};
 		let type = options.type === "MANGA" ? "MANGA" : "ANIME";
