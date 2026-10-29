@@ -201,6 +201,13 @@ exportModule({
 				}
 			}
 		});
+		//list table columns, the same panel as on the list pages
+		if(typeof ListTable !== "undefined"){
+			hohSettings.appendChild(create("hr"));
+			let listTableSettings = create("div","#listTableSettings",false,hohSettings);
+			create("p",false,translate("$listTable_settingsHelp"),listTableSettings);
+			ListTable.buildSettings(listTableSettings)
+		}
 		let titleAliasSettings = create("div");
 		let titleAliasInstructions = create("p");
 		titleAliasInstructions.innerText = translate("$settings_aliasHelp");
